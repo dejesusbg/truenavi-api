@@ -1,0 +1,31 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - app-network
+
+  nodejs:
+    build:
+      context: .
+    container_name: truenavi
+    ports:
+      - "3000:3000" # Your Node.js app's port (default is 3000)
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/your-database
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+    command: "npm run dev" # Or use `npm start` in production
+
+volumes:
+  mongodb_data:
+
+networks:
+  app-network:
+    driver: bridge
