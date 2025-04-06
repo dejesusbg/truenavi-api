@@ -1,4 +1,5 @@
 const Edge = require("../models/Edge");
+const Node = require("../models/Node");
 
 // @desc    Get all edges
 // @route   GET /api/edges
@@ -51,11 +52,30 @@ exports.getEdge = async (req, res, next) => {
 // @access  Private
 exports.createEdge = async (req, res, next) => {
   try {
-    const edge = await Edge.create(req.body);
+    // Extract necessary fields
+    const { a_id, b_id, coordinates } = req.body;
+
+    // Validate required fields
+    if (!a_id || !b_id || coordinates.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Both node IDs (a_id and b_id) and coordinates are required",
+      });
+    }
+
+    // Create edge - distance will be calculated automatically by pre-save hook
+    const edge = await Edge.create({
+      a_id,
+      b_id,
+      coordinates: coordinates || [], // Optional coordinates for the path
+    });
+
+    // Populate the nodes for the response
+    const populatedEdge = await Edge.findById(edge._id).populate("a_id b_id");
 
     res.status(201).json({
       success: true,
-      data: edge,
+      data: populatedEdge,
     });
   } catch (error) {
     res.status(400).json({
@@ -70,10 +90,7 @@ exports.createEdge = async (req, res, next) => {
 // @access  Private
 exports.updateEdge = async (req, res, next) => {
   try {
-    const edge = await Edge.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const edge = await Edge.findById(req.params.id);
 
     if (!edge) {
       return res.status(404).json({
@@ -82,9 +99,20 @@ exports.updateEdge = async (req, res, next) => {
       });
     }
 
+    // Update fields
+    if (req.body.a_id) edge.a_id = req.body.a_id;
+    if (req.body.b_id) edge.b_id = req.body.b_id;
+    if (req.body.coordinates) edge.coordinates = req.body.coordinates;
+
+    // Save will trigger the pre-save hook to recalculate distance
+    await edge.save();
+
+    // Populate the response
+    const updatedEdge = await Edge.findById(edge._id).populate("a_id b_id");
+
     res.status(200).json({
       success: true,
-      data: edge,
+      data: updatedEdge,
     });
   } catch (error) {
     res.status(400).json({

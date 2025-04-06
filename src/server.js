@@ -15,6 +15,7 @@ const auth = require("./routes/auth");
 const nodes = require("./routes/nodes");
 const edges = require("./routes/edges");
 const preferences = require("./routes/preferences");
+const routes = require('./routes/routes');
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use("/api/auth", auth);
 app.use("/api/nodes", nodes);
 app.use("/api/edges", edges);
 app.use("/api/preferences", preferences);
+app.use('/api/routes', routes);
 
 app.get("/", (req, res) => {
   res.send("TrueNavi API is running...");
