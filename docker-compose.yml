@@ -14,14 +14,14 @@ services:
       context: .
     container_name: truenavi
     ports:
-      - "3000:3000" # Your Node.js app's port (default is 3000)
+      - "5000:5000" 
     environment:
-      - MONGO_URI=mongodb://mongodb:27017/your-database
+      - MONGO_URI=mongodb://mongodb:27017/truenavi
     depends_on:
       - mongodb
     networks:
       - app-network
-    command: "npm run dev" # Or use `npm start` in production
+    command: "npm run start" 
 
 volumes:
   mongodb_data:
