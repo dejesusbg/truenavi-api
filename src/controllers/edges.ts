@@ -1,10 +1,14 @@
-const Edge = require("../models/Edge");
-const Node = require("../models/Node");
+import { NextFunction, Request, Response } from "express";
+import Edge from "../models/Edge";
 
 // @desc    Get all edges
 // @route   GET /api/edges
 // @access  Private
-exports.getEdges = async (req, res, next) => {
+export const getEdges = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const edges = await Edge.find().populate("a_id b_id");
 
@@ -16,7 +20,7 @@ exports.getEdges = async (req, res, next) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 };
@@ -24,7 +28,11 @@ exports.getEdges = async (req, res, next) => {
 // @desc    Get single edge
 // @route   GET /api/edges/:id
 // @access  Private
-exports.getEdge = async (req, res, next) => {
+export const getEdge = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
   try {
     const edge = await Edge.findById(req.params.id).populate("a_id b_id");
 
@@ -42,7 +50,7 @@ exports.getEdge = async (req, res, next) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 };
@@ -50,12 +58,16 @@ exports.getEdge = async (req, res, next) => {
 // @desc    Create new edge
 // @route   POST /api/edges
 // @access  Private
-exports.createEdge = async (req, res, next) => {
+export const createEdge = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
   try {
-    // Extract necessary fields
+    // extract necessary fields
     const { a_id, b_id, coordinates } = req.body;
 
-    // Validate required fields
+    // validate required fields
     if (!a_id || !b_id || coordinates.length === 0) {
       return res.status(400).json({
         success: false,
@@ -63,14 +75,14 @@ exports.createEdge = async (req, res, next) => {
       });
     }
 
-    // Create edge - distance will be calculated automatically by pre-save hook
+    // create edge - distance will be calculated automatically by pre-save hook
     const edge = await Edge.create({
       a_id,
       b_id,
-      coordinates: coordinates || [], // Optional coordinates for the path
+      coordinates: coordinates || [],
     });
 
-    // Populate the nodes for the response
+    // populate the nodes for the response
     const populatedEdge = await Edge.findById(edge._id).populate("a_id b_id");
 
     res.status(201).json({
@@ -80,7 +92,7 @@ exports.createEdge = async (req, res, next) => {
   } catch (error) {
     res.status(400).json({
       success: false,
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 };
@@ -88,7 +100,11 @@ exports.createEdge = async (req, res, next) => {
 // @desc    Update edge
 // @route   PUT /api/edges/:id
 // @access  Private
-exports.updateEdge = async (req, res, next) => {
+export const updateEdge = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
   try {
     const edge = await Edge.findById(req.params.id);
 
@@ -99,15 +115,15 @@ exports.updateEdge = async (req, res, next) => {
       });
     }
 
-    // Update fields
+    // update fields
     if (req.body.a_id) edge.a_id = req.body.a_id;
     if (req.body.b_id) edge.b_id = req.body.b_id;
     if (req.body.coordinates) edge.coordinates = req.body.coordinates;
 
-    // Save will trigger the pre-save hook to recalculate distance
+    // save will trigger the pre-save hook to recalculate distance
     await edge.save();
 
-    // Populate the response
+    // populate the response
     const updatedEdge = await Edge.findById(edge._id).populate("a_id b_id");
 
     res.status(200).json({
@@ -117,7 +133,7 @@ exports.updateEdge = async (req, res, next) => {
   } catch (error) {
     res.status(400).json({
       success: false,
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 };
@@ -125,7 +141,11 @@ exports.updateEdge = async (req, res, next) => {
 // @desc    Delete edge
 // @route   DELETE /api/edges/:id
 // @access  Private
-exports.deleteEdge = async (req, res, next) => {
+export const deleteEdge = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
   try {
     const edge = await Edge.findById(req.params.id);
 
@@ -145,7 +165,7 @@ exports.deleteEdge = async (req, res, next) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 };
@@ -153,7 +173,11 @@ exports.deleteEdge = async (req, res, next) => {
 // @desc    Get edges for a specific node
 // @route   GET /api/edges/node/:nodeId
 // @access  Private
-exports.getNodeEdges = async (req, res, next) => {
+export const getNodeEdges = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
   try {
     const edges = await Edge.find({
       $or: [{ a_id: req.params.nodeId }, { b_id: req.params.nodeId }],
@@ -167,7 +191,7 @@ exports.getNodeEdges = async (req, res, next) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 };

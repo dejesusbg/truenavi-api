@@ -1,20 +1,19 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const NodeSchema = new mongoose.Schema({
   name: {
     type: String,
+    unique: true,
     trim: true,
   },
   coordinates: {
     type: [Number],
     required: true,
     validate: {
-      validator: function (v) {
-        return v.length === 2;
-      },
-      message: (props) => `${props.value} is not a valid coordinate pair!`,
+      validator: (v: number[]) => v.length === 2,
+      message: () => `coordinates must be an array of [lat, lng] pairs`,
     },
-    index: "2dsphere", // Create geospatial index for location queries
+    index: "2dsphere", // geospatial index for location queries
   },
   next: [
     {
@@ -28,4 +27,5 @@ const NodeSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Node", NodeSchema);
+const Node = mongoose.model("Node", NodeSchema);
+export default Node;

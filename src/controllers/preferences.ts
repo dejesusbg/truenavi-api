@@ -1,14 +1,19 @@
-const Preferences = require("../models/Preferences");
+import { NextFunction, Request, Response } from "express";
+import Preferences from "../models/Preferences";
 
 // @desc    Get user preferences
 // @route   GET /api/preferences
 // @access  Private
-exports.getPreferences = async (req, res, next) => {
+export const getPreferences = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
   try {
     const preferences = await Preferences.findOne({ user: req.user.id });
 
     if (!preferences) {
-      // Create default preferences if none exists
+      // create default preferences if none exists
       const defaultPreferences = await Preferences.create({
         user: req.user.id,
       });
@@ -26,7 +31,7 @@ exports.getPreferences = async (req, res, next) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 };
@@ -34,18 +39,22 @@ exports.getPreferences = async (req, res, next) => {
 // @desc    Update preferences
 // @route   PUT /api/preferences
 // @access  Private
-exports.updatePreferences = async (req, res, next) => {
+export const updatePreferences = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     let preferences = await Preferences.findOne({ user: req.user.id });
 
     if (!preferences) {
-      // Create with updated values if none exists
+      // create with updated values if none exists
       preferences = await Preferences.create({
         user: req.user.id,
         ...req.body,
       });
     } else {
-      // Update existing preferences
+      // update existing preferences
       preferences = await Preferences.findOneAndUpdate(
         { user: req.user.id },
         req.body,
@@ -63,7 +72,7 @@ exports.updatePreferences = async (req, res, next) => {
   } catch (error) {
     res.status(400).json({
       success: false,
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 };

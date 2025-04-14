@@ -4,7 +4,7 @@
  * @param {Array} coord2 [latitude, longitude] of second point
  * @returns {Number} Distance in meters
  */
-const calculateDistance = (coord1, coord2) => {
+export const calculateDistance = (coord1: number[], coord2: number[]) => {
   const [lat1, lon1] = coord1;
   const [lat2, lon2] = coord2;
 
@@ -28,7 +28,7 @@ const calculateDistance = (coord1, coord2) => {
  * @param {Array} coordinates Array of [latitude, longitude] coordinates
  * @returns {Number} Total distance in meters
  */
-const calculatePathDistance = (coordinates) => {
+export const calculatePathDistance = (coordinates: number[][]) => {
   let totalDistance = 0;
 
   for (let i = 0; i < coordinates.length - 1; i++) {
@@ -36,9 +36,4 @@ const calculatePathDistance = (coordinates) => {
   }
 
   return totalDistance;
-};
-
-module.exports = {
-  calculateDistance,
-  calculatePathDistance,
 };

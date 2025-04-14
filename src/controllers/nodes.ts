@@ -1,9 +1,14 @@
-const Node = require("../models/Node");
+import { NextFunction, Request, Response } from "express";
+import Node from "../models/Node";
 
 // @desc    Get all nodes
 // @route   GET /api/nodes
 // @access  Private
-exports.getNodes = async (req, res, next) => {
+export const getNodes = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const nodes = await Node.find();
 
@@ -15,7 +20,7 @@ exports.getNodes = async (req, res, next) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 };
@@ -23,7 +28,11 @@ exports.getNodes = async (req, res, next) => {
 // @desc    Get single node
 // @route   GET /api/nodes/:id
 // @access  Private
-exports.getNode = async (req, res, next) => {
+export const getNode = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
   try {
     const node = await Node.findById(req.params.id).populate("next");
 
@@ -41,7 +50,7 @@ exports.getNode = async (req, res, next) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 };
@@ -49,7 +58,11 @@ exports.getNode = async (req, res, next) => {
 // @desc    Create new node
 // @route   POST /api/nodes
 // @access  Private
-exports.createNode = async (req, res, next) => {
+export const createNode = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const node = await Node.create(req.body);
 
@@ -60,7 +73,7 @@ exports.createNode = async (req, res, next) => {
   } catch (error) {
     res.status(400).json({
       success: false,
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 };
@@ -68,7 +81,11 @@ exports.createNode = async (req, res, next) => {
 // @desc    Update node
 // @route   PUT /api/nodes/:id
 // @access  Private
-exports.updateNode = async (req, res, next) => {
+export const updateNode = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
   try {
     const node = await Node.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -89,7 +106,7 @@ exports.updateNode = async (req, res, next) => {
   } catch (error) {
     res.status(400).json({
       success: false,
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 };
@@ -97,7 +114,11 @@ exports.updateNode = async (req, res, next) => {
 // @desc    Delete node
 // @route   DELETE /api/nodes/:id
 // @access  Private
-exports.deleteNode = async (req, res, next) => {
+export const deleteNode = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
   try {
     const node = await Node.findById(req.params.id);
 
@@ -117,7 +138,7 @@ exports.deleteNode = async (req, res, next) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 };
@@ -125,13 +146,17 @@ exports.deleteNode = async (req, res, next) => {
 // @desc    Get nodes within radius
 // @route   GET /api/nodes/radius/:lat/:lng/:distance
 // @access  Private
-exports.getNodesInRadius = async (req, res, next) => {
+export const getNodesInRadius = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { lat, lng, distance } = req.params;
 
     // Calculate radius using radians
     // Divide distance by radius of Earth (6378.1 kilometers)
-    const radius = distance / 6378.1;
+    const radius = parseFloat(distance) / 6378.1;
 
     const nodes = await Node.find({
       coordinates: {
@@ -147,7 +172,7 @@ exports.getNodesInRadius = async (req, res, next) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error.message,
+      error: (error as Error).message,
     });
   }
 };

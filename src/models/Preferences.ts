@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const PreferencesSchema = new mongoose.Schema({
   user: {
@@ -16,14 +16,11 @@ const PreferencesSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-  notifications: {
-    type: Boolean,
-    default: true,
-  },
   vibration: {
     type: Boolean,
     default: true,
   },
 });
 
-module.exports = mongoose.model("Preferences", PreferencesSchema);
+const Preferences = mongoose.model("Preferences", PreferencesSchema);
+export default Preferences;

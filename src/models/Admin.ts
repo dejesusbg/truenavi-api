@@ -1,6 +1,15 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+import mongoose from "mongoose";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
+interface AdminProps extends Document {
+  name: string;
+  email: string;
+  password: string;
+  createdAt: Date;
+  getSignedJwtToken(): string;
+  matchPassword(enteredPassword: string): Promise<boolean>;
+}
 
 const AdminSchema = new mongoose.Schema({
   name: {
@@ -26,26 +35,23 @@ const AdminSchema = new mongoose.Schema({
   },
 });
 
-// Encrypt password using bcrypt
+// encrypt password using bcrypt
 AdminSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
-    next();
-  }
-
+  if (!this.isModified("password")) next();
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-// Sign JWT and return
+// sign JWT and return
 AdminSchema.methods.getSignedJwtToken = function () {
-  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE,
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET as any, {
+    expiresIn: process.env.JWT_EXPIRE as any,
   });
 };
 
-// Match user entered password to hashed password in database
-AdminSchema.methods.matchPassword = async function (enteredPassword) {
+// match user entered password to hashed password in database
+AdminSchema.methods.matchPassword = async function (enteredPassword: string) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-module.exports = mongoose.model("Admin", AdminSchema);
+export default mongoose.model<AdminProps>("Admin", AdminSchema);

@@ -1,16 +1,16 @@
-const express = require("express");
-const {
+import express from "express";
+import {
   getEdges,
   getEdge,
   createEdge,
   updateEdge,
   deleteEdge,
   getNodeEdges,
-} = require("../controllers/edges");
+} from "../controllers/edges";
 
 const router = express.Router();
 
-const { protect } = require("../middleware/auth");
+import { protect } from "../middleware/auth";
 
 router.route("/node/:nodeId").get(protect, getNodeEdges);
 
@@ -22,4 +22,4 @@ router
   .put(protect, updateEdge)
   .delete(protect, deleteEdge);
 
-module.exports = router;
+export default router;

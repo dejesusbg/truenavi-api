@@ -1,16 +1,16 @@
-const express = require("express");
-const {
+import express from "express";
+import {
   getNodes,
   getNode,
   createNode,
   updateNode,
   deleteNode,
   getNodesInRadius,
-} = require("../controllers/nodes");
+} from "../controllers/nodes";
 
 const router = express.Router();
 
-const { protect } = require("../middleware/auth");
+import { protect } from "../middleware/auth";
 
 router.route("/radius/:lat/:lng/:distance").get(protect, getNodesInRadius);
 
@@ -22,4 +22,4 @@ router
   .put(protect, updateNode)
   .delete(protect, deleteNode);
 
-module.exports = router;
+export default router;
