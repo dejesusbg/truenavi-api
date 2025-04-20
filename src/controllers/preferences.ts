@@ -1,27 +1,28 @@
 import { NextFunction, Request, Response } from "express";
 import Preferences from "../models/Preferences";
 
-// @desc    Get user preferences
+// @desc    Get device preferences
 // @route   GET /api/preferences
-// @access  Private
+// @access  Public or device-authenticated
 export const getPreferences = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<any> => {
+  const device_id = req.headers["device-id"] as string;
+
+  if (!device_id) {
+    return res.status(400).json({
+      success: false,
+      error: "Missing device-id in headers",
+    });
+  }
+
   try {
-    const preferences = await Preferences.findOne({ user: req.user.id });
+    let preferences = await Preferences.findOne({ device_id });
 
     if (!preferences) {
-      // create default preferences if none exists
-      const defaultPreferences = await Preferences.create({
-        user: req.user.id,
-      });
-
-      return res.status(200).json({
-        success: true,
-        data: defaultPreferences,
-      });
+      preferences = await Preferences.create({ device_id });
     }
 
     res.status(200).json({
@@ -36,27 +37,34 @@ export const getPreferences = async (
   }
 };
 
-// @desc    Update preferences
+// @desc    Update device preferences
 // @route   PUT /api/preferences
-// @access  Private
+// @access  Public or device-authenticated
 export const updatePreferences = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<any> => {
+  const device_id = req.headers["device-id"] as string;
+
+  if (!device_id) {
+    return res.status(400).json({
+      success: false,
+      error: "Missing device-id in headers",
+    });
+  }
+
   try {
-    let preferences = await Preferences.findOne({ user: req.user.id });
+    let preferences = await Preferences.findOne({ device_id });
 
     if (!preferences) {
-      // create with updated values if none exists
       preferences = await Preferences.create({
-        user: req.user.id,
+        device_id,
         ...req.body,
       });
     } else {
-      // update existing preferences
       preferences = await Preferences.findOneAndUpdate(
-        { user: req.user.id },
+        { device_id },
         req.body,
         {
           new: true,

@@ -1,18 +1,18 @@
 import mongoose from "mongoose";
 
 const PreferencesSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Admin",
+  device_id: {
+    type: String,
     required: true,
     unique: true,
+    index: true,
   },
   language: {
     type: String,
     enum: ["es", "en"],
     default: "es",
   },
-  showWeather: {
+  weather: {
     type: Boolean,
     default: true,
   },

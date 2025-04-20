@@ -3,8 +3,6 @@ import { getPreferences, updatePreferences } from "../controllers/preferences";
 
 const router = express.Router();
 
-import { protect } from "../middleware/auth";
-
-router.route("/").get(protect, getPreferences).put(protect, updatePreferences);
+router.route("/").get(getPreferences).put(updatePreferences);
 
 export default router;
