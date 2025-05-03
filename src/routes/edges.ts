@@ -1,4 +1,4 @@
-import express from "express";
+import express from 'express';
 import {
   getEdges,
   getEdge,
@@ -6,20 +6,14 @@ import {
   updateEdge,
   deleteEdge,
   getNodeEdges,
-} from "../controllers/edges";
+} from '../controllers/edges';
 
 const router = express.Router();
 
-import { protect } from "../middleware/auth";
+import { protect } from '../middleware/auth';
 
-router.route("/node/:nodeId").get(protect, getNodeEdges);
-
-router.route("/").get(protect, getEdges).post(protect, createEdge);
-
-router
-  .route("/:id")
-  .get(protect, getEdge)
-  .put(protect, updateEdge)
-  .delete(protect, deleteEdge);
+router.route('/node/:nodeId').get(protect, getNodeEdges);
+router.route('/').get(protect, getEdges).post(protect, createEdge);
+router.route('/:id').get(protect, getEdge).put(protect, updateEdge).delete(protect, deleteEdge);
 
 export default router;

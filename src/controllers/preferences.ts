@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from "express";
-import Preferences from "../models/Preferences";
+import { NextFunction, Request, Response } from 'express';
+import Preferences from '../models/Preferences';
 
 // @desc    Get device preferences
 // @route   GET /api/preferences
@@ -9,12 +9,12 @@ export const getPreferences = async (
   res: Response,
   next: NextFunction
 ): Promise<any> => {
-  const device_id = req.headers["device-id"] as string;
+  const device_id = req.headers['device-id'] as string;
 
   if (!device_id) {
     return res.status(400).json({
       success: false,
-      error: "Missing device-id in headers",
+      error: 'Missing device-id in headers',
     });
   }
 
@@ -45,12 +45,12 @@ export const updatePreferences = async (
   res: Response,
   next: NextFunction
 ): Promise<any> => {
-  const device_id = req.headers["device-id"] as string;
+  const device_id = req.headers['device-id'] as string;
 
   if (!device_id) {
     return res.status(400).json({
       success: false,
-      error: "Missing device-id in headers",
+      error: 'Missing device-id in headers',
     });
   }
 
@@ -63,14 +63,10 @@ export const updatePreferences = async (
         ...req.body,
       });
     } else {
-      preferences = await Preferences.findOneAndUpdate(
-        { device_id },
-        req.body,
-        {
-          new: true,
-          runValidators: true,
-        }
-      );
+      preferences = await Preferences.findOneAndUpdate({ device_id }, req.body, {
+        new: true,
+        runValidators: true,
+      });
     }
 
     res.status(200).json({

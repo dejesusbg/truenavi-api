@@ -5,8 +5,7 @@ const router = express.Router();
 
 import { protect } from '../middleware/auth';
 
-router.route('/:id').put(protect, updateAdmin);
+router.route('/:id').put(protect, updateAdmin).delete(protect, deleteAdmin);
 router.route('/').get(protect, getAllAdmins);
-router.route('/:id').delete(protect, deleteAdmin);
 
 export default router;

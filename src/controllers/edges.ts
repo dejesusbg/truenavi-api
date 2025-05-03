@@ -1,16 +1,12 @@
-import { NextFunction, Request, Response } from "express";
-import Edge from "../models/Edge";
+import { NextFunction, Request, Response } from 'express';
+import Edge from '../models/Edge';
 
 // @desc    Get all edges
 // @route   GET /api/edges
 // @access  Private
-export const getEdges = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getEdges = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const edges = await Edge.find().populate("a_id b_id");
+    const edges = await Edge.find().populate('a_id b_id');
 
     res.status(200).json({
       success: true,
@@ -28,18 +24,14 @@ export const getEdges = async (
 // @desc    Get single edge
 // @route   GET /api/edges/:id
 // @access  Private
-export const getEdge = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<any> => {
+export const getEdge = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   try {
-    const edge = await Edge.findById(req.params.id).populate("a_id b_id");
+    const edge = await Edge.findById(req.params.id).populate('a_id b_id');
 
     if (!edge) {
       return res.status(404).json({
         success: false,
-        error: "Edge not found",
+        error: 'Edge not found',
       });
     }
 
@@ -58,11 +50,7 @@ export const getEdge = async (
 // @desc    Create new edge
 // @route   POST /api/edges
 // @access  Private
-export const createEdge = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<any> => {
+export const createEdge = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   try {
     // extract necessary fields
     const { a_id, b_id, coordinates } = req.body;
@@ -71,7 +59,7 @@ export const createEdge = async (
     if (!a_id || !b_id || coordinates.length === 0) {
       return res.status(400).json({
         success: false,
-        error: "Both node IDs (a_id and b_id) and coordinates are required",
+        error: 'Both node IDs (a_id and b_id) and coordinates are required',
       });
     }
 
@@ -83,7 +71,7 @@ export const createEdge = async (
     });
 
     // populate the nodes for the response
-    const populatedEdge = await Edge.findById(edge._id).populate("a_id b_id");
+    const populatedEdge = await Edge.findById(edge._id).populate('a_id b_id');
 
     res.status(201).json({
       success: true,
@@ -100,18 +88,14 @@ export const createEdge = async (
 // @desc    Update edge
 // @route   PUT /api/edges/:id
 // @access  Private
-export const updateEdge = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<any> => {
+export const updateEdge = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   try {
     const edge = await Edge.findById(req.params.id);
 
     if (!edge) {
       return res.status(404).json({
         success: false,
-        error: "Edge not found",
+        error: 'Edge not found',
       });
     }
 
@@ -124,7 +108,7 @@ export const updateEdge = async (
     await edge.save();
 
     // populate the response
-    const updatedEdge = await Edge.findById(edge._id).populate("a_id b_id");
+    const updatedEdge = await Edge.findById(edge._id).populate('a_id b_id');
 
     res.status(200).json({
       success: true,
@@ -141,18 +125,14 @@ export const updateEdge = async (
 // @desc    Delete edge
 // @route   DELETE /api/edges/:id
 // @access  Private
-export const deleteEdge = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<any> => {
+export const deleteEdge = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   try {
     const edge = await Edge.findById(req.params.id);
 
     if (!edge) {
       return res.status(404).json({
         success: false,
-        error: "Edge not found",
+        error: 'Edge not found',
       });
     }
 
@@ -181,7 +161,7 @@ export const getNodeEdges = async (
   try {
     const edges = await Edge.find({
       $or: [{ a_id: req.params.nodeId }, { b_id: req.params.nodeId }],
-    }).populate("a_id b_id");
+    }).populate('a_id b_id');
 
     res.status(200).json({
       success: true,

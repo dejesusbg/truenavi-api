@@ -1,14 +1,10 @@
-import { NextFunction, Request, Response } from "express";
-import Admin from "../models/Admin";
+import { NextFunction, Request, Response } from 'express';
+import Admin from '../models/Admin';
 
 // @desc    Register admin
 // @route   POST /api/auth/register
 // @access  Public
-export const register = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const register = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { name, email, password } = req.body;
 
@@ -31,11 +27,7 @@ export const register = async (
 // @desc    Login admin
 // @route   POST /api/auth/login
 // @access  Public
-export const login = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<any> => {
+export const login = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   try {
     const { email, password } = req.body;
 
@@ -43,17 +35,17 @@ export const login = async (
     if (!email || !password) {
       return res.status(400).json({
         success: false,
-        error: "Please provide an email and password",
+        error: 'Please provide an email and password',
       });
     }
 
     // check for admin
-    const admin = await Admin.findOne({ email }).select("+password");
+    const admin = await Admin.findOne({ email }).select('+password');
 
     if (!admin) {
       return res.status(401).json({
         success: false,
-        error: "Invalid credentials",
+        error: 'Invalid credentials',
       });
     }
 
@@ -62,7 +54,7 @@ export const login = async (
     if (!isMatch) {
       return res.status(401).json({
         success: false,
-        error: "Invalid credentials",
+        error: 'Invalid credentials',
       });
     }
 
@@ -77,12 +69,8 @@ export const login = async (
 
 // @desc    Log admin out / clear cookie
 // @route   GET /api/auth/logout
-// @access  PrivateF
-export const logout = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+// @access  Private
+export const logout = async (req: Request, res: Response, next: NextFunction) => {
   res.status(200).json({
     success: true,
     data: {},
@@ -95,14 +83,13 @@ const sendTokenResponse = (admin: any, statusCode: number, res: Response) => {
 
   const options = {
     expires: new Date(
-      Date.now() +
-        parseInt(process.env.JWT_COOKIE_EXPIRE || "1", 10) * 24 * 60 * 60 * 1000
+      Date.now() + parseInt(process.env.JWT_COOKIE_EXPIRE || '1', 10) * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
     secure: false,
   };
 
-  if (process.env.NODE_ENV === "production") {
+  if (process.env.NODE_ENV === 'production') {
     options.secure = true;
   }
 

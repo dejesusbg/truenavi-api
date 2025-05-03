@@ -1,5 +1,5 @@
-import Node from "../models/Node";
-import Edge from "../models/Edge";
+import Node from '../models/Node';
+import Edge from '../models/Edge';
 
 class PriorityQueue<T = string> {
   values: { val: T; priority: number }[];
@@ -97,30 +97,27 @@ export async function findShortestPath(
     if (previous[current] === null && current !== startNodeId.toString()) {
       return {
         success: false,
-        message: "No path exists between these nodes",
+        message: 'No path exists between these nodes',
       };
     }
 
     while (current) {
       path.unshift(current);
-      current = previous[current] ?? "";
+      current = previous[current] ?? '';
     }
 
     const pathEdges = [];
     for (let i = 0; i < path.length - 1; i++) {
       const edge = edges.find(
         (e) =>
-          (e.a_id.toString() === path[i] &&
-            e.b_id.toString() === path[i + 1]) ||
+          (e.a_id.toString() === path[i] && e.b_id.toString() === path[i + 1]) ||
           (e.a_id.toString() === path[i + 1] && e.b_id.toString() === path[i])
       );
 
       if (edge) pathEdges.push(edge);
     }
 
-    const pathNodes = path.map((nodeId) =>
-      nodes.find((n) => n._id.toString() === nodeId)
-    );
+    const pathNodes = path.map((nodeId) => nodes.find((n) => n._id.toString() === nodeId));
 
     return {
       success: true,
@@ -129,7 +126,7 @@ export async function findShortestPath(
       edges: pathEdges,
     };
   } catch (error: any) {
-    console.error("Error in findShortestPath:", error);
+    console.error('Error in findShortestPath:', error);
     return {
       success: false,
       message: error.message,

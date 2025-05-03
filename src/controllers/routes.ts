@@ -1,9 +1,9 @@
-import { NextFunction, Request, Response } from "express";
-import { findShortestPath } from "../services/routeService";
+import { NextFunction, Request, Response } from 'express';
+import { findShortestPath } from '../services/routeService';
 
 // @desc    Calculate shortest path between two nodes
 // @route   GET /api/routes/:startNodeId/:endNodeId
-// @access  Private
+// @access  Public or device-authenticated
 export const calculateRoute = async (
   req: Request,
   res: Response,
@@ -15,7 +15,7 @@ export const calculateRoute = async (
     if (!startNodeId || !endNodeId) {
       return res.status(400).json({
         success: false,
-        error: "Please provide both start and end node IDs",
+        error: 'Please provide both start and end node IDs',
       });
     }
 
