@@ -4,11 +4,7 @@ import Admin from '../models/Admin';
 // @desc    Get all admins
 // @route   GET /api/admins
 // @access  Private
-export const getAllAdmins = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<any> => {
+export const getAdmins = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   try {
     const admins = await Admin.find();
 
@@ -34,10 +30,7 @@ export const updateAdmin = async (
   next: NextFunction
 ): Promise<any> => {
   try {
-    const admin = await Admin.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const admin = await Admin.findById(req.params.id).select('+password');
 
     if (!admin) {
       return res.status(404).json({
@@ -46,9 +39,22 @@ export const updateAdmin = async (
       });
     }
 
+    if (req.body.password) {
+      admin.password = req.body.password;
+    }
+
+    ['name', 'email'].forEach((field) => {
+      if (req.body[field] != null) {
+        (admin as any)[field] = req.body[field];
+      }
+    });
+
+    await admin.save();
+
+    const { password, ...adminWithoutPassword } = admin.toObject();
     res.status(200).json({
       success: true,
-      data: admin,
+      data: adminWithoutPassword,
     });
   } catch (error) {
     res.status(400).json({
