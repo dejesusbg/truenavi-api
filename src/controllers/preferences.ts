@@ -10,10 +10,10 @@ export const getPreferences = async (
   next: NextFunction
 ): Promise<any> => {
   try {
-    const deviceId = req.headers['Device-ID'] as string;
+    const deviceId = req.headers['device-id'] as string;
 
     if (!deviceId) {
-      return res.status(400).json({ success: false, error: 'Missing Device-ID in headers' });
+      return res.status(400).json({ success: false, error: 'Missing device-id in headers' });
     }
 
     let preferences = await Preferences.findOne({ deviceId });
@@ -40,10 +40,10 @@ export const updatePreferences = async (
   next: NextFunction
 ): Promise<any> => {
   try {
-    const deviceId = req.headers['Device-ID'] as string;
+    const deviceId = req.headers['device-id'] as string;
 
     if (!deviceId) {
-      return res.status(400).json({ success: false, error: 'Missing Device-ID in headers' });
+      return res.status(400).json({ success: false, error: 'Missing device-id in headers' });
     }
 
     let preferences = await Preferences.findOne({ deviceId });
