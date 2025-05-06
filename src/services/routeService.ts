@@ -49,11 +49,11 @@ export async function findShortestPath(
     });
 
     edges.forEach((edge) => {
-      const aId = edge.a_id.toString();
-      const bId = edge.b_id.toString();
+      const startNodeId = edge.startNodeId.toString();
+      const endNodeId = edge.endNodeId.toString();
 
-      graph[aId][bId] = edge.distance ?? 0;
-      graph[bId][aId] = edge.distance ?? 0;
+      graph[startNodeId][endNodeId] = edge.distance ?? 0;
+      graph[endNodeId][startNodeId] = edge.distance ?? 0;
     });
 
     const distances: Record<string, number> = {};
@@ -95,10 +95,7 @@ export async function findShortestPath(
     let current = endNodeId.toString();
 
     if (previous[current] === null && current !== startNodeId.toString()) {
-      return {
-        success: false,
-        message: 'No path exists between these nodes',
-      };
+      return { success: false, message: 'No path exists between these nodes' };
     }
 
     while (current) {
@@ -110,8 +107,8 @@ export async function findShortestPath(
     for (let i = 0; i < path.length - 1; i++) {
       const edge = edges.find(
         (e) =>
-          (e.a_id.toString() === path[i] && e.b_id.toString() === path[i + 1]) ||
-          (e.a_id.toString() === path[i + 1] && e.b_id.toString() === path[i])
+          (e.startNodeId.toString() === path[i] && e.endNodeId.toString() === path[i + 1]) ||
+          (e.startNodeId.toString() === path[i + 1] && e.endNodeId.toString() === path[i])
       );
 
       if (edge) pathEdges.push(edge);
@@ -125,11 +122,8 @@ export async function findShortestPath(
       path: pathNodes,
       edges: pathEdges,
     };
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error in findShortestPath:', error);
-    return {
-      success: false,
-      message: error.message,
-    };
+    return { success: false, message: (error as Error).message };
   }
 }

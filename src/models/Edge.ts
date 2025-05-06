@@ -3,8 +3,8 @@ import Node from './Node';
 import { calculateDistance, calculatePathDistance } from '../utils/distance';
 
 const EdgeSchema = new mongoose.Schema({
-  a_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Node', required: true },
-  b_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Node', required: true },
+  startNodeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Node', required: true },
+  endNodeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Node', required: true },
   coordinates: {
     type: [[Number]],
     required: true,
@@ -20,29 +20,29 @@ const EdgeSchema = new mongoose.Schema({
 });
 
 // compound index for faster lookups
-EdgeSchema.index({ a_id: 1, b_id: 1 }, { unique: true });
+EdgeSchema.index({ startNodeId: 1, endNodeId: 1 }, { unique: true });
 
 // pre-save middleware to automatically calculate the distance
 EdgeSchema.pre('save', async function (next) {
   try {
     // fetch the nodes to get their coordinates
-    const nodeA = await Node.findById(this.a_id);
-    const nodeB = await Node.findById(this.b_id);
+    const startNode = await Node.findById(this.startNodeId);
+    const endNode = await Node.findById(this.endNodeId);
 
-    if (!nodeA || !nodeB) {
+    if (!startNode || !endNode) {
       throw new Error('cannot find both nodes to calculate distance');
     }
 
     if (this.coordinates.length === 0) {
       // if no coordinates were provided, use direct path between nodes
-      this.coordinates = [nodeA.coordinates, nodeB.coordinates];
-      this.distance = calculateDistance(nodeA.coordinates, nodeB.coordinates);
+      this.coordinates = [startNode.coordinates, endNode.coordinates];
+      this.distance = calculateDistance(startNode.coordinates, endNode.coordinates);
     } else {
       // calculate total path distance: nodeA -> coordinates -> nodeB
       let totalDistance = 0;
 
       // distance from nodeA to first coordinate point
-      totalDistance += calculateDistance(nodeA.coordinates, this.coordinates[0]);
+      totalDistance += calculateDistance(startNode.coordinates, this.coordinates[0]);
 
       // distance along the path of coordinates
       if (this.coordinates.length > 1) {
@@ -51,7 +51,7 @@ EdgeSchema.pre('save', async function (next) {
 
       // distance from last coordinate point to nodeB
       const lastCoord = this.coordinates[this.coordinates.length - 1];
-      totalDistance += calculateDistance(lastCoord, nodeB.coordinates);
+      totalDistance += calculateDistance(lastCoord, endNode.coordinates);
 
       this.distance = totalDistance;
     }

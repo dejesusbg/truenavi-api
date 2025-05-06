@@ -13,33 +13,22 @@ export const calculateRoute = async (
     const { startNodeId, endNodeId } = req.params;
 
     if (!startNodeId || !endNodeId) {
-      return res.status(400).json({
-        success: false,
-        error: 'Please provide both start and end node IDs',
-      });
+      return res
+        .status(400)
+        .json({ success: false, error: 'Please provide both start and end node IDs' });
     }
 
     const result = await findShortestPath(startNodeId, endNodeId);
 
     if (!result.success) {
-      return res.status(404).json({
-        success: false,
-        error: result.message,
-      });
+      return res.status(404).json({ success: false, error: result.message });
     }
 
     res.status(200).json({
       success: true,
-      data: {
-        totalDistance: result.distance,
-        path: result.path,
-        edges: result.edges,
-      },
+      data: { totalDistance: result.distance, path: result.path, edges: result.edges },
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: (error as Error).message,
-    });
+    res.status(500).json({ success: false, error: (error as Error).message });
   }
 };

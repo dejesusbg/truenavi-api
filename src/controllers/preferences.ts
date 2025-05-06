@@ -9,26 +9,20 @@ export const getPreferences = async (
   res: Response,
   next: NextFunction
 ): Promise<any> => {
-  const device_id = req.headers['device-id'] as string;
-
-  if (!device_id) {
-    return res.status(400).json({
-      success: false,
-      error: 'Missing device-id in headers',
-    });
-  }
-
   try {
-    let preferences = await Preferences.findOne({ device_id });
+    const deviceId = req.headers['Device-ID'] as string;
 
-    if (!preferences) {
-      preferences = await Preferences.create({ device_id });
+    if (!deviceId) {
+      return res.status(400).json({ success: false, error: 'Missing Device-ID in headers' });
     }
 
-    res.status(200).json({
-      success: true,
-      data: preferences,
-    });
+    let preferences = await Preferences.findOne({ deviceId });
+
+    if (!preferences) {
+      preferences = await Preferences.create({ deviceId });
+    }
+
+    res.status(200).json({ success: true, data: preferences });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -45,38 +39,26 @@ export const updatePreferences = async (
   res: Response,
   next: NextFunction
 ): Promise<any> => {
-  const device_id = req.headers['device-id'] as string;
-
-  if (!device_id) {
-    return res.status(400).json({
-      success: false,
-      error: 'Missing device-id in headers',
-    });
-  }
-
   try {
-    let preferences = await Preferences.findOne({ device_id });
+    const deviceId = req.headers['Device-ID'] as string;
+
+    if (!deviceId) {
+      return res.status(400).json({ success: false, error: 'Missing Device-ID in headers' });
+    }
+
+    let preferences = await Preferences.findOne({ deviceId });
 
     if (!preferences) {
-      preferences = await Preferences.create({
-        device_id,
-        ...req.body,
-      });
+      preferences = await Preferences.create({ deviceId, ...req.body });
     } else {
-      preferences = await Preferences.findOneAndUpdate({ device_id }, req.body, {
+      preferences = await Preferences.findOneAndUpdate({ deviceId }, req.body, {
         new: true,
         runValidators: true,
       });
     }
 
-    res.status(200).json({
-      success: true,
-      data: preferences,
-    });
+    res.status(200).json({ success: true, data: preferences });
   } catch (error) {
-    res.status(400).json({
-      success: false,
-      error: (error as Error).message,
-    });
+    res.status(400).json({ success: false, error: (error as Error).message });
   }
 };
