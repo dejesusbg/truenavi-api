@@ -7,17 +7,9 @@ import Admin from '../models/Admin';
 export const getAdmins = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   try {
     const admins = await Admin.find();
-
-    res.status(200).json({
-      success: true,
-      count: admins.length,
-      data: admins,
-    });
+    res.status(200).json({ success: true, count: admins.length, data: admins });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: (error as Error).message,
-    });
+    res.status(500).json({ success: false, error: (error as Error).message });
   }
 };
 
@@ -33,10 +25,7 @@ export const updateAdmin = async (
     const admin = await Admin.findById(req.params.id).select('+password');
 
     if (!admin) {
-      return res.status(404).json({
-        success: false,
-        error: 'Admin not found',
-      });
+      return res.status(404).json({ success: false, error: 'Admin not found' });
     }
 
     if (req.body.password) {
@@ -50,17 +39,10 @@ export const updateAdmin = async (
     });
 
     await admin.save();
-
     const { password, ...adminWithoutPassword } = admin.toObject();
-    res.status(200).json({
-      success: true,
-      data: adminWithoutPassword,
-    });
+    res.status(200).json({ success: true, data: adminWithoutPassword });
   } catch (error) {
-    res.status(400).json({
-      success: false,
-      error: (error as Error).message,
-    });
+    res.status(400).json({ success: false, error: (error as Error).message });
   }
 };
 
@@ -76,22 +58,12 @@ export const deleteAdmin = async (
     const admin = await Admin.findById(req.params.id);
 
     if (!admin) {
-      return res.status(404).json({
-        success: false,
-        error: 'Admin not found',
-      });
+      return res.status(404).json({ success: false, error: 'Admin not found' });
     }
 
     await admin.remove();
-
-    res.status(200).json({
-      success: true,
-      data: {},
-    });
+    res.status(200).json({ success: true, data: {} });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: (error as Error).message,
-    });
+    res.status(500).json({ success: false, error: (error as Error).message });
   }
 };

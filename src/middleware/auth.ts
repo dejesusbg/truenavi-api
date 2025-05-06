@@ -20,10 +20,7 @@ export const protect = async (req: Request, res: Response, next: NextFunction): 
 
   // make sure token exists
   if (!token) {
-    return res.status(401).json({
-      success: false,
-      error: 'Not authorized to access this route',
-    });
+    return res.status(401).json({ success: false, error: 'Not authorized to access this route' });
   }
 
   try {
@@ -32,17 +29,11 @@ export const protect = async (req: Request, res: Response, next: NextFunction): 
     if (typeof decoded === 'object' && 'id' in decoded) {
       req.user = await Admin.findById(decoded.id);
     } else {
-      return res.status(401).json({
-        success: false,
-        error: 'Not authorized to access this route',
-      });
+      return res.status(401).json({ success: false, error: 'Not authorized to access this route' });
     }
 
     next();
   } catch (error) {
-    return res.status(401).json({
-      success: false,
-      error: 'Not authorized to access this route',
-    });
+    return res.status(401).json({ success: false, error: 'Not authorized to access this route' });
   }
 };
