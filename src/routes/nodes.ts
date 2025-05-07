@@ -12,8 +12,10 @@ const router = express.Router();
 
 import { protect } from '../middleware/auth';
 
-router.route('/radius/:lat/:lng/:distance').get(protect, getNodesInRadius);
-router.route('/').get(protect, getNodes).post(protect, createNode);
 router.route('/:id').get(protect, getNode).put(protect, updateNode).delete(protect, deleteNode);
+router.route('/').post(protect, createNode);
+
+router.get('/radius/:lat/:lng/:distance', getNodesInRadius);
+router.get('/', getNodes);
 
 export default router;

@@ -3,7 +3,7 @@ import Node from '../models/Node';
 
 // @desc    Get all nodes
 // @route   GET /api/nodes
-// @access  Private
+// @access  Public
 export const getNodes = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const nodes = await Node.find();
@@ -83,7 +83,7 @@ export const deleteNode = async (req: Request, res: Response, next: NextFunction
 
 // @desc    Get nodes within radius
 // @route   GET /api/nodes/radius/:lat/:lng/:distance
-// @access  Private
+// @access  Public
 export const getNodesInRadius = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { lat, lng, distance } = req.params;

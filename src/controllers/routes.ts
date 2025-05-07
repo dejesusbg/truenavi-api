@@ -3,7 +3,7 @@ import { findShortestPath } from '../services/routeService';
 
 // @desc    Calculate shortest path between two nodes
 // @route   GET /api/routes/:startNodeId/:endNodeId
-// @access  Public or device-authenticated
+// @access  Public
 export const calculateRoute = async (
   req: Request,
   res: Response,
