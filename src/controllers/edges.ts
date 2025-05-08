@@ -36,18 +36,18 @@ export const getEdge = async (req: Request, res: Response, next: NextFunction): 
 export const createEdge = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
   try {
     // extract necessary fields
-    const { startNodeId, endNodeId, coordinates } = req.body;
+    const { startNodeId, endNodeId } = req.body;
 
     // validate required fields
-    if (!startNodeId || !endNodeId || coordinates.length === 0) {
+    if (!startNodeId || !endNodeId) {
       return res.status(400).json({
         success: false,
-        error: 'Both node IDs (startNodeId and endNodeId) and coordinates are required',
+        error: 'Both node IDs (startNodeId and endNodeId) are required',
       });
     }
 
     // create edge - distance will be calculated automatically by pre-save hook
-    const edge = await Edge.create({ startNodeId, endNodeId, coordinates: coordinates || [] });
+    const edge = await Edge.create({ startNodeId, endNodeId });
 
     // populate the nodes for the response
     const populatedEdge = await Edge.findById(edge._id).populate('startNodeId endNodeId');
@@ -71,7 +71,6 @@ export const updateEdge = async (req: Request, res: Response, next: NextFunction
     // update fields
     if (req.body.startNodeId) edge.startNodeId = req.body.startNodeId;
     if (req.body.endNodeId) edge.endNodeId = req.body.endNodeId;
-    if (req.body.coordinates) edge.coordinates = req.body.coordinates;
 
     // save will trigger the pre-save hook to recalculate distance
     await edge.save();

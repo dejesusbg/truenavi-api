@@ -4,7 +4,7 @@
  * @param {Array} coord2 [latitude, longitude] of second point
  * @returns {Number} Distance in meters
  */
-export const calculateDistance = (coord1: number[], coord2: number[]) => {
+export const calculateDistance = (coord1: number[], coord2: number[]): number => {
   const [lat1, lon1] = coord1;
   const [lat2, lon2] = coord2;
 
@@ -20,20 +20,5 @@ export const calculateDistance = (coord1: number[], coord2: number[]) => {
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const distance = R * c;
 
-  return Math.round(distance); // Round to nearest meter
-};
-
-/**
- * Calculate the total distance of a path with multiple points
- * @param {Array} coordinates Array of [latitude, longitude] coordinates
- * @returns {Number} Total distance in meters
- */
-export const calculatePathDistance = (coordinates: number[][]) => {
-  let totalDistance = 0;
-
-  for (let i = 0; i < coordinates.length - 1; i++) {
-    totalDistance += calculateDistance(coordinates[i], coordinates[i + 1]);
-  }
-
-  return totalDistance;
+  return Math.round(distance); // round to nearest meter
 };
