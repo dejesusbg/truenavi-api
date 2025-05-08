@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const NodeSchema = new mongoose.Schema({
-  name: { type: String, unique: true, trim: true },
+  name: { type: String, unique: true, sparse: true, trim: true },
   coordinates: {
     type: [Number],
     required: true,
@@ -11,7 +11,6 @@ const NodeSchema = new mongoose.Schema({
     },
     index: '2dsphere', // geospatial index for location queries
   },
-  next: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Node' }],
   timestamp: { type: String, default: () => new Date().toISOString() },
 });
 
